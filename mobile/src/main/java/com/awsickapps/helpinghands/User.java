@@ -1,5 +1,7 @@
 package com.awsickapps.helpinghands;
 
+import android.content.SharedPreferences;
+
 import java.util.List;
 
 /**
