@@ -14,7 +14,7 @@ public class RestClient {
 
     private static RestApi REST_CLIENT;
     private static String ROOT =
-            "http://seedle.azurewebsites.net/";
+            "http://helpinghandsserver.azurewebsites.net/";
 
     static {
         setupRestClient();
