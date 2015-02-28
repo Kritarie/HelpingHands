@@ -12,14 +12,14 @@ import java.util.Set;
  */
 public class ApplicationData {
 
-    private SharedPreferences sp;
+    private static SharedPreferences sp;
 
     private static final String SP_KEY = "AwsickAppsSP";
     private static final String HELP_KEY = "helpsWith";
     private static final String GET_HELP_KEY = "needsHelpWith";
 
-    private HashSet<String> helpsWith;
-    private HashSet<String> needsHelpWith;
+    private static HashSet<String> helpsWith;
+    private static HashSet<String> needsHelpWith;
 
 
 
