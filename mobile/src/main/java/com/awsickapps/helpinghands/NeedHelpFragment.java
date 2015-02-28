@@ -7,26 +7,23 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.awsickapps.helpinghands.busevents.GeocodedEvent;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import utils.GeocoderTask;
 
 /**
  * Created by kritarie on 2/28/15.
@@ -39,8 +36,6 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
 
     private MapFragment mapFragment;
     private GoogleMap map;
-    private Geocoder geocoder;
-
     private Context context;
 
     public static Fragment newInstance() {
@@ -58,7 +53,6 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        geocoder = new Geocoder(context, Locale.getDefault());
 
         return view;
     }
@@ -78,30 +72,33 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                         new LatLng(lat, lng), 15);
                 map.animateCamera(cameraUpdate);
-
-                List<Address> addresses = new ArrayList<>();
-
-                try {
-                    addresses = geocoder.getFromLocation(lat, lng, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (!addresses.isEmpty()) {
-                    String geoaddress = addresses.get(0).getAddressLine(0);
-                    String city = addresses.get(0).getLocality();
-                    String state = addresses.get(0).getAdminArea();
-
-                    address.setText(geoaddress);
-                    citystate.setText(city + ", " + state);
-                }
+                new GeocoderTask(context, lat, lng).execute();
             }
         });
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BaseApplication.getEventBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BaseApplication.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void setAddress(GeocodedEvent event) {
+        address.setText(event.getAddress());
+        citystate.setText(event.getCity() + ", " + event.getState());
     }
 }
