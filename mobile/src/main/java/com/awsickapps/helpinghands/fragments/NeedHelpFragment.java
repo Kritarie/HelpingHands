@@ -101,7 +101,9 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                 getGps(), 15);
-        map.moveCamera(cameraUpdate);
+        try{
+            map.moveCamera(cameraUpdate);
+        }catch (Exception e){}
 
     }
 

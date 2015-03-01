@@ -156,14 +156,14 @@ public class MainActivity extends ActionBarActivity
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle("Request A Helping Hand")
                 .setContentText("Swipe left to request a helping hand")
-                .setSmallIcon(R.drawable.ic_drawer);
+                .setSmallIcon(R.drawable.icon);
 
         boolean showNotification = false;
 
         for(int i = 0; i < ailments.length; i++){
             if(ApplicationData.isActive(ApplicationData.GET_HELP_WITH + ailments[i])){
                 showNotification = true;
-                builder = builder.addAction(R.drawable.ic_drawer, ailments[i], pendingIntents[i]);
+                builder = builder.addAction(R.drawable.icon, ailments[i], pendingIntents[i]);
             }
         }
 
