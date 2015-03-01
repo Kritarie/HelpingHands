@@ -15,6 +15,7 @@
     </string-array>
 
     <string name="selected_hands">How many Hands can you lend?</string>
+    <string name="hands_needed">What health conditions would you need help with?</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

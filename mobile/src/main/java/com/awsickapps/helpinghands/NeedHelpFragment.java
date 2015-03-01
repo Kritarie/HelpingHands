@@ -57,7 +57,7 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
         context = getActivity().getApplicationContext();
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        //mapFragment.getMapAsync(this);
         geocoder = new Geocoder(context, Locale.getDefault());
 
         return view;

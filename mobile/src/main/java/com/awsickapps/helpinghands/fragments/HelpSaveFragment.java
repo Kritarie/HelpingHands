@@ -4,6 +4,7 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,31 @@ import utils.ApplicationData;
  */
 public class HelpSaveFragment extends ListFragment{
 
-    ApplicationData data;
+    private static String prefix;
+
+    public static HelpSaveFragment newInstance(int position){
+
+        if(position == 1){
+            prefix = ApplicationData.HELP_WITH;
+        }else if(position == 2){
+            prefix = ApplicationData.GET_HELP_WITH;
+        }
+
+        return new HelpSaveFragment();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_help_save, container, false);
+
+        TextView tv = (TextView) view.findViewById(R.id.tvHeader);
+        if(prefix.equals(ApplicationData.HELP_WITH))
+            tv.setText(getString(R.string.selected_hands));
+        else
+            tv.setText(getString(R.string.hands_needed));
+
         Adapter adapter = new Adapter(getActivity());
         setListAdapter(adapter);
         return view;
@@ -42,7 +61,6 @@ public class HelpSaveFragment extends ListFragment{
         LayoutInflater inflater;
         Context context;
         String[] helpOptions;
-        HashSet<String> selectedHands;
         HashMap<CheckBox.OnCheckedChangeListener, String> viewMap;
 
         public Adapter(Context context){
@@ -50,7 +68,6 @@ public class HelpSaveFragment extends ListFragment{
             this.context = context;
             helpOptions = getResources().getStringArray(R.array.helping_hands);
             viewMap = new HashMap<>();
-            selectedHands = data.getHelpsWith();
         }
 
         @Override
@@ -79,16 +96,12 @@ public class HelpSaveFragment extends ListFragment{
             String handOption = helpOptions[position];
 
             tv.setText(handOption);
-            if(selectedHands.contains(handOption))
-                cb.setChecked(true);
+            cb.setChecked(ApplicationData.isActive(prefix + handOption));
 
-            CheckBox.OnCheckedChangeListener occl = new CompoundButton.OnCheckedChangeListener() {
+            CheckBox.OnCheckedChangeListener occl = new CheckBox.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked)
-                        selectedHands.add(viewMap.get(this));
-                    else
-                        selectedHands.remove(viewMap.get(this));
+                    ApplicationData.update(prefix + viewMap.get(this), isChecked);
                 }
             };
 

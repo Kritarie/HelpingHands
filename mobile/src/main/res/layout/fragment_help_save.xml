@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="@string/selected_hands"
+        android:id="@+id/tvHeader"
         android:textSize="@dimen/text_size"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
