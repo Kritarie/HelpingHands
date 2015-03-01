@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/tv"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="28dp"
         android:text="SAMPLE"
         android:textSize="@dimen/text_size"
         android:layout_centerVertical="true"

@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import com.awsickapps.helpinghands.busevents.FinishSplashEvent;
+import com.awsickapps.helpinghands.busevents.StartSplashEvent;
 import com.awsickapps.helpinghands.fragments.NeedHelpFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -34,11 +36,16 @@ import java.io.IOException;
 import com.awsickapps.helpinghands.fragments.HelpSaveFragment;
 import com.squareup.otto.Subscribe;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import utils.ApplicationData;
+import utils.RestClient;
 
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
     public static final int REQUEST_CODE = 0x69;
     public static final int NOTIFICATION_CODE = 0x42;
     public static final String AILMENT_MESSAGE = "com.frogtown.helpinghands.ailmentmessage";
@@ -48,7 +55,7 @@ public class MainActivity extends ActionBarActivity
 
     public NeedHelpFragment needHelpFragment;
 
-    public static final String PROPERTY_REG_ID = "registration_id";
+
     private static final String PROPERTY_APP_VERSION = "1";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
@@ -109,7 +116,7 @@ public class MainActivity extends ActionBarActivity
         // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
-            regid = getRegistrationId(context);
+            regid = ApplicationData.getRegId();
 
             if (regid.isEmpty()) {
                 registerInBackground();
@@ -128,6 +135,7 @@ public class MainActivity extends ActionBarActivity
     public void createNotification(){
         String[] ailments = getResources().getStringArray(R.array.helping_hands);
         Intent[] intents = new Intent[ailments.length];
+
 
         for(int i = 0; i < ailments.length; i++){
             Intent intent = new Intent(this, MainActivity.class);
@@ -163,7 +171,7 @@ public class MainActivity extends ActionBarActivity
         for(int i = 0; i < ailments.length; i++){
             if(ApplicationData.isActive(ApplicationData.GET_HELP_WITH + ailments[i])){
                 showNotification = true;
-                builder = builder.addAction(R.drawable.icon, ailments[i], pendingIntents[i]);
+                builder = builder.addAction(ApplicationData.getImageAsset(ailments[i]), ailments[i], pendingIntents[i]);
             }
         }
 
@@ -300,10 +308,11 @@ public class MainActivity extends ActionBarActivity
         final SharedPreferences prefs = getGcmPreferences(context);
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regId);
-        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.commit();
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putString(PROPERTY_REG_ID, regId);
+//        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+//        editor.commit();
+        ApplicationData.setRegId(regId);
     }
 
     /**
@@ -314,25 +323,25 @@ public class MainActivity extends ActionBarActivity
      * @return registration ID, or empty string if there is no existing
      *         registration ID.
      */
-    private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGcmPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        Log.i("PROPERTY_REG_ID", registrationId);
-        if (registrationId.isEmpty()) {
-            Log.i(TAG, "Registration not found.");
-            return "";
-        }
-        // Check if app was updated; if so, it must clear the registration ID
-        // since the existing regID is not guaranteed to work with the new
-        // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
-            Log.i(TAG, "App version changed.");
-            return "";
-        }
-        return registrationId;
-    }
+//    private String getRegistrationId(Context context) {
+//        final SharedPreferences prefs = getGcmPreferences(context);
+//        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+//        Log.i("PROPERTY_REG_ID", registrationId);
+//        if (registrationId.isEmpty()) {
+//            Log.i(TAG, "Registration not found.");
+//            return "";
+//        }
+//        // Check if app was updated; if so, it must clear the registration ID
+//        // since the existing regID is not guaranteed to work with the new
+//        // app version.
+//        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+//        int currentVersion = getAppVersion(context);
+//        if (registeredVersion != currentVersion) {
+//            Log.i(TAG, "App version changed.");
+//            return "";
+//        }
+//        return registrationId;
+//    }
 
     /**
      * Registers the application with GCM servers asynchronously.
@@ -356,7 +365,18 @@ public class MainActivity extends ActionBarActivity
                     // can use GCM/HTTP or CCS to send messages to your app.
 
                     //TODO uncomment this when jenkins fixes his shit
-                    //RestClient.get().createUser(regid);
+                    RestClient.get().createUser(regid, new Callback<Integer>() {
+
+                        @Override
+                        public void success(Integer integer, Response response) {
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
 
                     // For this demo: we don't need to send it because the device will send
                     // upstream messages to a server that echo back the message using the
@@ -409,5 +429,15 @@ public class MainActivity extends ActionBarActivity
         // how you store the regID in your app is up to you.
         return getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
+    }
+
+    @Subscribe
+    public void startSplash(StartSplashEvent event) {
+
+    }
+
+    @Subscribe
+    public void stopSplash(FinishSplashEvent event) {
+
     }
 }

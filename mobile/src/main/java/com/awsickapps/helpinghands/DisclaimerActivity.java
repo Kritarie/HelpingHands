@@ -3,10 +3,8 @@ package com.awsickapps.helpinghands;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -23,7 +21,11 @@ import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import utils.ApplicationData;
+import utils.RestClient;
 
 /**
  * Created by allen on 2/28/15.
@@ -35,6 +37,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
 
     HashMap<View, String> viewMap;
     Adapter adapter;
+    double lat, lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,10 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
         viewMap = new HashMap<>();
         setContentView(R.layout.emergency_dialog);
         ButterKnife.inject(this);
+
+        Bundle b = getIntent().getExtras();
+        lat = b.getDouble("lat");
+        lng = b.getDouble("lng");
 
         tvDisclaimer.setText(Html.fromHtml(
                 "<h1>" + getString(R.string.warning_text) + "</h1>\n" +
@@ -66,8 +73,21 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
         Toast.makeText(this, "Help is on the way!", Toast.LENGTH_LONG).show();
 
         //send their needed hand request and gps coordinates to MATT JENKINS!!!
+        RestClient.get().requestHelp(ApplicationData.getRegId(), handNeeded, lat, lng, new Callback<Integer>() {
+
+            @Override
+            public void success(Integer integer, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
         sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
         dial911();
+        finish();
     }
 
     private void sendTextMessage(String handNeeded, String location){
@@ -141,6 +161,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
             ImageView iv = (ImageView) view.findViewById(R.id.iv);
 
             tv.setText(missingHandsList.get(position));
+            iv.setImageResource(ApplicationData.getImageAsset(missingHandsList.get(position)));
             return view;
         }
     }

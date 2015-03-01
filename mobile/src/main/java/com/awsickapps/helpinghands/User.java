@@ -12,8 +12,8 @@ import java.util.List;
 public class User {
 
     private String gcmId;
-    private List<String> needHelpWith;
     private List<String> canHelpWith;
+    private List<String> needHelpWith;
 
     public User() {
     }

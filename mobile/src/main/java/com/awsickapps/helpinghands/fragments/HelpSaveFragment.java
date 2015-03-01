@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.awsickapps.helpinghands.BaseApplication;
 import com.awsickapps.helpinghands.R;
+import com.awsickapps.helpinghands.User;
 import com.awsickapps.helpinghands.busevents.ChangesSavedEvent;
 
 import java.util.ArrayList;
@@ -28,7 +29,11 @@ import java.util.HashSet;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import utils.ApplicationData;
+import utils.RestClient;
 
 /**
  * Created by allen on 2/28/15.
@@ -162,6 +167,7 @@ public class HelpSaveFragment extends ListFragment {
 
             viewMap.put(occl, handOption);
             cb.setOnCheckedChangeListener(occl);
+            iv.setImageResource(ApplicationData.getImageAsset(helpOptions[position]));
 
 
             return row;
@@ -193,6 +199,20 @@ public class HelpSaveFragment extends ListFragment {
 
 
         Toast.makeText(getActivity(), "Changes Saved", Toast.LENGTH_SHORT).show();
+        RestClient.get().updateUser(new User(ApplicationData.getRegId(), usersHelpsWith, userNeedsHelpsWith),
+                                    new Callback<Integer>() {
+
+            @Override
+            public void success(Integer integer, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+
+        });
         BaseApplication.getEventBus().post(new ChangesSavedEvent());
     }
 

@@ -62,7 +62,7 @@
                 android:text="Emergency"
                 android:textSize="30sp"
                 android:textColor="@color/light_transparent"
-                android:background="@color/dark_transparent"
+                android:background="#CC121212"
                 android:contentDescription="help button"/>
 
         </RelativeLayout>
