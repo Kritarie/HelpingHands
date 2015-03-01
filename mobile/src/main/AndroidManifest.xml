@@ -52,6 +52,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".DisclaimerActivity"
+            android:theme="@style/Base.Theme.AppCompat.Dialog"/>
+
         <receiver
             android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
