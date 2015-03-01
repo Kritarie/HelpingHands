@@ -19,7 +19,9 @@ import android.widget.TextView;
 import com.awsickapps.helpinghands.BaseApplication;
 import com.awsickapps.helpinghands.DisclaimerActivity;
 import com.awsickapps.helpinghands.R;
+import com.awsickapps.helpinghands.RescueActivity;
 import com.awsickapps.helpinghands.busevents.GeocodedEvent;
+import com.awsickapps.helpinghands.busevents.StartSplashEvent;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,6 +55,12 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     public static Fragment newInstance() {
         NeedHelpFragment f = new NeedHelpFragment();
         return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        BaseApplication.getEventBus().post(new StartSplashEvent());
     }
 
     @Override
@@ -141,6 +149,8 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     public void startEmergencyDisclaimer() {
 
         Intent i = new Intent(getActivity(), DisclaimerActivity.class);
+        i.putExtra("lat", location.getLatitude());
+        i.putExtra("lng", location.getLongitude());
         startActivity(i);
     }
 

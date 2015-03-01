@@ -14,6 +14,8 @@ public class ApplicationData {
 
     private static final String SP_KEY = "AwsickAppsSP";
 
+    private static final String PROPERTY_REG_ID = "registration_id";
+
 
     public static void setSharedPreferences(Context context){
         sp = context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE);
@@ -25,5 +27,13 @@ public class ApplicationData {
 
     public static boolean isActive(String key){
         return sp.getBoolean(key, false);
+    }
+
+    public static String getRegId() {
+        return sp.getString(PROPERTY_REG_ID, "");
+    }
+
+    public static boolean setRegId(String id) {
+        return sp.edit().putString(PROPERTY_REG_ID, id).commit();
     }
 }

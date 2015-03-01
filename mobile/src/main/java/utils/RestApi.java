@@ -6,6 +6,8 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
 
 /**
@@ -15,12 +17,17 @@ import retrofit.http.POST;
  */
 public interface RestApi {
 
-    @POST("/api/users/CreateUser")
-    public void createUser(String id, Callback<Integer> cb);
+    @FormUrlEncoded
+    @POST("/api/user/CreateUser")
+    public void createUser(@Field("DeviceId") String id, Callback<Integer> cb);
 
-    @POST("/api/users/UpdateUser")
+    @POST("/api/user/UpdateUser")
     public void updateUser(@Body User user, Callback<Integer> cb);
 
-    @POST("/api/NeedHelp")
-    public void requestHelp(String id, String ailment, double lat, double lng, Callback<Integer> cb);
+    @FormUrlEncoded
+    @POST("/api/RequestHelp")
+    public void requestHelp(@Field("DeviceId") String id,
+                           @Field("Ailment") String ailment,
+                           @Field("lat") double lat,
+                           @Field("lng") double lng, Callback<Integer> cb);
 }
