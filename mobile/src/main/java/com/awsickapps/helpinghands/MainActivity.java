@@ -2,6 +2,7 @@ package com.awsickapps.helpinghands;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -64,11 +65,17 @@ public class MainActivity extends ActionBarActivity
 
     String regid;
 
+    double lat;
+    double lng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ApplicationData.setSharedPreferences(this);
+        Intent i = getIntent();
+        lat = i.getDoubleExtra("lat", 0);
+        lng = i.getDoubleExtra("lng", 0);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -100,7 +107,7 @@ public class MainActivity extends ActionBarActivity
         switch(position) {
             case 0:
                 fragmentManager.beginTransaction()
-                .replace(R.id.container, NeedHelpFragment.newInstance())
+                .replace(R.id.container, NeedHelpFragment.newInstance(lat, lng))
                 .commit();
                 break;
             case 1:

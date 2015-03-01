@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.awsickapps.helpinghands.BaseApplication;
@@ -21,6 +22,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
@@ -35,13 +39,19 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
 
     @InjectView(R.id.address) TextView address;
     @InjectView(R.id.citystate) TextView citystate;
+    @InjectView(R.id.helpButton) Button helpButton;
 
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private Context context;
+    private Location location;
 
-    public static Fragment newInstance() {
+    public static Fragment newInstance(double lat, double lng) {
         NeedHelpFragment f = new NeedHelpFragment();
+        Bundle b = new Bundle();
+        b.putDouble("lat", lat);
+        b.putDouble("lng", lng);
+        f.setArguments(b);
         return f;
     }
 
@@ -50,6 +60,8 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.need_help_fragment, container, false);
         ButterKnife.inject(this, view);
+
+        Bundle b = getArguments();
 
         context = getActivity().getApplicationContext();
 
@@ -72,12 +84,13 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
 
         map.setMyLocationEnabled(true);
+
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
-            public void onMyLocationChange(Location location) {
-
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
+            public void onMyLocationChange(Location loc) {
+                location = loc;
+                double lat = loc.getLatitude();
+                double lng = loc.getLongitude();
 
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                         new LatLng(lat, lng), 15);
