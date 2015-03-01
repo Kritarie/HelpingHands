@@ -121,6 +121,7 @@ public class HelpSaveFragment extends ListFragment {
 
             viewMap.put(occl, handOption);
             cb.setOnCheckedChangeListener(occl);
+            iv.setImageResource(ApplicationData.getImageAsset(helpOptions[position]));
 
 
             return row;

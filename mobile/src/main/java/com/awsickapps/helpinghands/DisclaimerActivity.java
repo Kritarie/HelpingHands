@@ -66,6 +66,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
         //send their needed hand request and gps coordinates to MATT JENKINS!!!
         sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
         dial911();
+        finish();
     }
 
     private void sendTextMessage(String handNeeded, String location){
@@ -139,6 +140,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
             ImageView iv = (ImageView) view.findViewById(R.id.iv);
 
             tv.setText(missingHandsList.get(position));
+            iv.setImageResource(ApplicationData.getImageAsset(missingHandsList.get(position)));
             return view;
         }
     }
