@@ -3,10 +3,8 @@ package com.awsickapps.helpinghands;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -89,6 +87,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
         });
         sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
         dial911();
+        finish();
     }
 
     private void sendTextMessage(String handNeeded, String location){
@@ -162,6 +161,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
             ImageView iv = (ImageView) view.findViewById(R.id.iv);
 
             tv.setText(missingHandsList.get(position));
+            iv.setImageResource(ApplicationData.getImageAsset(missingHandsList.get(position)));
             return view;
         }
     }

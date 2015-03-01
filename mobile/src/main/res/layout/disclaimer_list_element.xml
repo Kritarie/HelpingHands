@@ -4,7 +4,7 @@
     android:layout_gravity="center_vertical"
     android:paddingTop="@dimen/checkbox_list_element_vertical_padding"
     android:paddingBottom="@dimen/checkbox_list_element_vertical_padding"
-    android:gravity="center"
+    android:gravity="center_vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/tv"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="28dp"
         android:text="SAMPLE"
         android:textSize="@dimen/text_size"
         android:layout_centerVertical="true"

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,22 +80,56 @@ public class HelpSaveFragment extends ListFragment {
         LayoutInflater inflater;
         Context context;
         String[] helpOptions;
+        SeekBar seekbar;
+        TextView label;
         HashMap<CheckBox.OnCheckedChangeListener, String> viewMap;
+        double[] values = {0.5, 1, 1.5, 2, 3, 4, 5, 8, 12, 15};
+        String labelText = "Willing to travel ";
+        String labelText2 = " miles";
 
         public Adapter(Context context){
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             this.context = context;
             helpOptions = getResources().getStringArray(R.array.helping_hands);
             viewMap = new HashMap<>();
+
+            seekbar = new SeekBar(context);
+            seekbar.setMax(values.length - 1);
+            seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    label.setText(labelText + getDistance() + labelText2);
+                    ApplicationData.update("distance", seekBar.getProgress());
+                }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+
+            label = new TextView(context);
+            label.setText(labelText + getDistance() + labelText2);
+
+        }
+
+        public double getDistance(){
+            return values[seekbar.getProgress()];
+        }
+
+        public boolean isOfferHelp(){
+            return !prefix.equals(ApplicationData.GET_HELP_WITH);
         }
 
         @Override
         public int getCount() {
-            return helpOptions.length;
+            return helpOptions.length + (isOfferHelp()?2:0);
         }
 
         @Override
         public Object getItem(int position) {
+            if(position == helpOptions.length){
+                return seekbar;
+            }
             return helpOptions[position];
         }
 
@@ -105,6 +140,12 @@ public class HelpSaveFragment extends ListFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            if(position == helpOptions.length){
+                return label;
+            }else if(position == helpOptions.length+1){
+                seekbar.setProgress(ApplicationData.getInt("distance"));
+                return seekbar;
+            }
             View row = inflater.inflate(R.layout.checkbox_list_element, parent, false);
 
             TextView tv = (TextView) row.findViewById(R.id.tv);
@@ -126,6 +167,7 @@ public class HelpSaveFragment extends ListFragment {
 
             viewMap.put(occl, handOption);
             cb.setOnCheckedChangeListener(occl);
+            iv.setImageResource(ApplicationData.getImageAsset(helpOptions[position]));
 
 
             return row;
