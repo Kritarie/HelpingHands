@@ -59,7 +59,6 @@ public class GcmIntentService extends IntentService {
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
                 try {
-                    String temp = intent.getStringExtra("data");
                     String temp2 = extras.toString();
                     JSONArray json = new JSONArray(temp2.replace("Bundle", ""));
 
