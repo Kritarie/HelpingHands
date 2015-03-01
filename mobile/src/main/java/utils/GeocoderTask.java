@@ -7,20 +7,15 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.awsickapps.helpinghands.BaseApplication;
 import com.awsickapps.helpinghands.busevents.GeocodedEvent;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /***An AsyncTask class for accessing the GeoCoding Web Service****/
 
 public class GeocoderTask extends AsyncTask<String, Void, List<Address>>{
-
-    protected LatLng enteredAddress;
-    protected MarkerOptions markerOptions;
 
     private Context context;
     private double lat;

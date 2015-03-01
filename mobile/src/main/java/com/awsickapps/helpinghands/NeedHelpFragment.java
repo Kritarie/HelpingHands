@@ -3,8 +3,6 @@ package com.awsickapps.helpinghands;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
