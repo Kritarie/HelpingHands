@@ -1,10 +1,6 @@
 package com.awsickapps.helpinghands;
 
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
@@ -12,29 +8,26 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
-import utils.NotificationActivity;
+import com.awsickapps.helpinghands.fragments.NeedHelpFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import utils.RestClient;
 import com.awsickapps.helpinghands.fragments.HelpSaveFragment;
 
 import utils.ApplicationData;
+import utils.NotificationActivity;
 
 
 public class MainActivity extends ActionBarActivity
@@ -46,7 +39,6 @@ public class MainActivity extends ActionBarActivity
 
     public NeedHelpFragment needHelpFragment;
 
-    public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "1";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -69,7 +61,6 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
 
     GoogleCloudMessaging gcm;
-    AtomicInteger msgId = new AtomicInteger();
     Context context;
 
     String regid;
@@ -134,7 +125,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch(position) {
             case 0:
                 needHelpFragment = (NeedHelpFragment)NeedHelpFragment.newInstance();
@@ -292,7 +283,9 @@ public class MainActivity extends ActionBarActivity
 
                     // You should send the registration ID to your server over HTTP, so it
                     // can use GCM/HTTP or CCS to send messages to your app.
-                    RestClient.get().createUser(regid);
+
+                    //TODO uncomment this when jenkins fixes his shit
+                    //RestClient.get().createUser(regid);
 
                     // For this demo: we don't need to send it because the device will send
                     // upstream messages to a server that echo back the message using the

@@ -87,8 +87,8 @@ public class NotificationActivity extends Activity{
                 .setSmallIcon(R.drawable.ic_drawer)
                 .addAction(R.drawable.ic_drawer, "Asthma Attack", pendingAsthmaIntent)
                 .addAction(R.drawable.ic_drawer, "Stroke", pendingStrokeIntent)
-                .addAction(R.drawable.ic_drawer, "Heart Attack", pendingStrokeIntent)
-                .addAction(R.drawable.ic_drawer, "Diabeetus", pendingStrokeIntent)
+                .addAction(R.drawable.ic_drawer, "Heart Attack", pendingHeartAttackIntent)
+                .addAction(R.drawable.ic_drawer, "Diabeetus", pendingDiabeetusIntent)
                 .build();
     }
 }

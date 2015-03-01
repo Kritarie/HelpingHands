@@ -1,23 +1,27 @@
-package com.awsickapps.helpinghands;
+package com.awsickapps.helpinghands.fragments;
 
 
-import android.app.Fragment;
 import android.content.Context;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.awsickapps.helpinghands.BaseApplication;
+import com.awsickapps.helpinghands.R;
 import com.awsickapps.helpinghands.busevents.GeocodedEvent;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Subscribe;
 
@@ -35,7 +39,7 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     @InjectView(R.id.citystate) TextView citystate;
     @InjectView(R.id.helpButton) Button helpButton;
 
-    private MapFragment mapFragment;
+    private SupportMapFragment mapFragment;
     private GoogleMap map;
     private Context context;
 
@@ -51,8 +55,16 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
         ButterKnife.inject(this, view);
 
         context = getActivity().getApplicationContext();
-        mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+
+        FragmentManager fm = null;
+
+        if (Build.VERSION.SDK_INT < 17)
+            fm = getFragmentManager();
+        else
+            fm = getChildFragmentManager();
+
+
+        mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         return view;
