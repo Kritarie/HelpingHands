@@ -80,6 +80,7 @@ public class GcmIntentService extends IntentService {
                         Intent i = new Intent (this, RescueActivity.class);
                         i.putExtra("lat", lat);
                         i.putExtra("lng", lng);
+                        i.putExtra("ailment", response.getString("ailment"));
                         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                     }
