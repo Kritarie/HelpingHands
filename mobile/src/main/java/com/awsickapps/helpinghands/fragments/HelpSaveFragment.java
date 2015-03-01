@@ -16,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.awsickapps.helpinghands.BaseApplication;
 import com.awsickapps.helpinghands.R;
+import com.awsickapps.helpinghands.busevents.ChangesSavedEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +151,7 @@ public class HelpSaveFragment extends ListFragment {
 
 
         Toast.makeText(getActivity(), "Changes Saved", Toast.LENGTH_SHORT).show();
-
+        BaseApplication.getEventBus().post(new ChangesSavedEvent());
     }
 
     @Override
