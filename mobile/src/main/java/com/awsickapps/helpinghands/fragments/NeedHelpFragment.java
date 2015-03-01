@@ -121,7 +121,9 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
 
     public void requestHelp(String ailment){
         //TODO this should be replaced by the buttons onclick function
-        helpButton.setText(ailment);
+        if(helpButton != null) {
+            helpButton.setText(ailment);
+        }
         Log.d("AILMENT", "Requesting help");
     }
 }
