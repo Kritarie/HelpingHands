@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import utils.RestClient;
+import com.awsickapps.helpinghands.fragments.HelpSaveFragment;
+
+import utils.ApplicationData;
 
 
 public class MainActivity extends ActionBarActivity
@@ -64,6 +67,7 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ApplicationData.setSharedPreferences(this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -97,6 +101,16 @@ public class MainActivity extends ActionBarActivity
                 fragmentManager.beginTransaction()
                 .replace(R.id.container, NeedHelpFragment.newInstance())
                 .commit();
+                break;
+            case 1:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, HelpSaveFragment.newInstance(position))
+                        .commit();
+                break;
+            case 2:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, HelpSaveFragment.newInstance(position))
+                        .commit();
                 break;
         }
     }
