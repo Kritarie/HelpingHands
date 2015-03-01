@@ -5,11 +5,13 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.awsickapps.helpinghands.BaseApplication;
@@ -35,6 +37,7 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
 
     @InjectView(R.id.address) TextView address;
     @InjectView(R.id.citystate) TextView citystate;
+    @InjectView(R.id.helpButton) Button helpButton;
 
     private SupportMapFragment mapFragment;
     private GoogleMap map;
@@ -110,5 +113,11 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     public void setAddress(GeocodedEvent event) {
         address.setText(event.getAddress());
         citystate.setText(event.getCity() + ", " + event.getState());
+    }
+
+    public void requestHelp(String ailment){
+        //TODO this should be replaced by the buttons onclick function
+        helpButton.setText(ailment);
+        Log.d("AILMENT", "Requesting help");
     }
 }
