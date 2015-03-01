@@ -8,10 +8,11 @@
     </string-array>
 
     <string-array name="helping_hands">
-        <item>CPR</item>
-        <item>Inhaler</item>
-        <item>epi pen</item>
-        <item>weed</item>
+        <item>Heart Attack</item>
+        <item>Stroke</item>
+        <item>Allergic Reaction</item>
+        <item>Glaucoma</item>
+        <item>Diabetes</item>
     </string-array>
 
     <string name="warning_text">WARNING: </string>

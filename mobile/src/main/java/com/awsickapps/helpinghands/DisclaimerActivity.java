@@ -43,7 +43,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
         tvDisclaimer.setText(Html.fromHtml(
                 "<h1>" + getString(R.string.warning_text) + "</h1>\n" +
                 getString(R.string.disclaimer_start) + "\n" +
-                "<b><i>" + getString(R.string.disclaimer) + "</i></b>\n" +
+                "<h4><i>" + getString(R.string.disclaimer) + "</i></h4>\n" +
                 getString(R.string.disclaimer_end)));
 
 
@@ -62,7 +62,8 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
         //if(request location settings){
             //send their needed hand request and gps coordinates to MATT JENKINS!!!
             sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
-        //}    }
+        //}
+    }
 
     private void sendTextMessage(String handNeeded, String location){
 
@@ -98,6 +99,10 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
                 if(ApplicationData.isActive(ApplicationData.GET_HELP_WITH + hand))
                     missingHandsList.add(hand);
             }
+
+            if(missingHandsList.isEmpty())
+                for(String hand : missingHands)
+                    missingHandsList.add(hand);
         }
 
         @Override
