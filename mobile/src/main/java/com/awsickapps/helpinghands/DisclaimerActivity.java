@@ -63,6 +63,8 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
             //send their needed hand request and gps coordinates to MATT JENKINS!!!
             sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
         //}
+
+        dial911();
     }
 
     private void sendTextMessage(String handNeeded, String location){

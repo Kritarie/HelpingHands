@@ -5,12 +5,17 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 /**
  * Created by kritarie on 2/28/15.
@@ -48,16 +53,54 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
-                Intent dialogIntent = new Intent(getBaseContext(), MainActivity.class);
-                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                System.out.println(extras.toString());
-                dialogIntent.putExtra("lat", intent.getDoubleExtra("lat", 50));
-                dialogIntent.putExtra("lng", intent.getDoubleExtra("lng", 50));
-                getApplication().startActivity(dialogIntent);
+
+                double lat = extras.getDouble("lat");
+                double lng = extras.getDouble("lng");
+                LatLng userLocation = getGps();
+
+                Location locationA = new Location("Distress location");
+
+                locationA.setLatitude(lat);
+                locationA.setLongitude(lng);
+
+                Location locationB = new Location("User location");
+
+                locationB.setLatitude(userLocation.latitude);
+                locationB.setLongitude(userLocation.longitude);
+
+                float distance = locationA.distanceTo(locationB);
+                System.out.println("Distance between is " + distance);
+                if (distance < 1610) {
+                    Intent i = new Intent (this, RescueActivity.class);
+                    i.putExtra("lat", lat);
+                    i.putExtra("lng", lng);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+    }
+
+    private LatLng getGps() {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+
+        Location l = null;
+
+        for (int i=providers.size()-1; i>=0; i--) {
+            l = lm.getLastKnownLocation(providers.get(i));
+            if (l != null) break;
+        }
+
+        double[] gps = new double[2];
+        LatLng loc;
+        if (l != null) {
+            return new LatLng(l.getLatitude(), l.getLongitude());
+        }
+
+        return null;
     }
 
     // Put the message into a notification and post it.
