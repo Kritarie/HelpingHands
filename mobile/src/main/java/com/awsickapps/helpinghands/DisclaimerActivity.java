@@ -77,16 +77,16 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
 
             @Override
             public void success(Integer integer, Response response) {
-
+                dial911();
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                dial911();
             }
         });
         sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
-        dial911();
+        //dial911();
         finish();
     }
 
@@ -100,7 +100,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
 
     private void dial911(){
 
-        Uri number = Uri.parse("tel:8047319861");
+        Uri number = Uri.parse("tel:5409076417");
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
 
