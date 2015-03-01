@@ -51,6 +51,7 @@
             </intent-filter>
         </activity>
         <activity android:name="utils.NotificationActivity"></activity>
+        <activity android:name=".DisclaimerActivity"></activity>
 
         <receiver
             android:name=".GcmBroadcastReceiver"
