@@ -4,11 +4,13 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ public class MainActivity extends ActionBarActivity
     private static final String PROPERTY_APP_VERSION = "1";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
+    private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT_TAG";
 
     /**
      * Substitute you own sender ID here. This is the project number you got
@@ -65,11 +68,17 @@ public class MainActivity extends ActionBarActivity
 
     String regid;
 
+    double lat;
+    double lng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ApplicationData.setSharedPreferences(this);
+        Intent i = getIntent();
+        lat = i.getDoubleExtra("lat", 0);
+        lng = i.getDoubleExtra("lng", 0);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -126,26 +135,34 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
         switch(position) {
             case 0:
+
+                /*fragmentManager.popBackStack(MAP_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                if (!(fragmentManager.findFragmentById(R.id.container) instanceof NeedHelpFragment))*/
+
                 needHelpFragment = (NeedHelpFragment)NeedHelpFragment.newInstance();
                 if(ailment != null && ailment.length() > 0){
                     needHelpFragment.requestHelp(ailment);
                 }
                 Log.d("AILMENT", "Ailment " + ailment);
+
                 fragmentManager.beginTransaction()
-                .replace(R.id.container, needHelpFragment)
-                .commit();
+                    .replace(R.id.container, needHelpFragment, MAP_FRAGMENT_TAG)
+                    .commit();
                 break;
             case 1:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, HelpSaveFragment.newInstance(position))
-                        .commit();
-                break;
             case 2:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, HelpSaveFragment.newInstance(position))
-                        .commit();
+                /*if (fragmentManager.findFragmentById(R.id.container) instanceof NeedHelpFragment)
+                    ft.addToBackStack(MAP_FRAGMENT_TAG)
+                            .add(R.id.container, HelpSaveFragment.newInstance(position))
+                            .commit();
+                else*/
+                    ft.replace(R.id.container, HelpSaveFragment.newInstance(position))
+                            .commit();
                 break;
         }
     }

@@ -42,6 +42,7 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private Context context;
+    private Location location;
 
     public static Fragment newInstance() {
         NeedHelpFragment f = new NeedHelpFragment();
@@ -53,6 +54,8 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.need_help_fragment, container, false);
         ButterKnife.inject(this, view);
+
+        Bundle b = getArguments();
 
         context = getActivity().getApplicationContext();
 
@@ -75,12 +78,13 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
 
         map.setMyLocationEnabled(true);
+
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
-            public void onMyLocationChange(Location location) {
-
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
+            public void onMyLocationChange(Location loc) {
+                location = loc;
+                double lat = loc.getLatitude();
+                double lng = loc.getLongitude();
 
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                         new LatLng(lat, lng), 15);

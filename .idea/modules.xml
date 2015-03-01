@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/HelpingHands.iml" filepath="$PROJECT_DIR$/HelpingHands.iml" />
-=======
->>>>>>> 4949a282f502bd5a066ded538174a1010f96c43c
+      <module fileurl="file://$PROJECT_DIR$/helping-hands.iml" filepath="$PROJECT_DIR$/helping-hands.iml" />
       <module fileurl="file://$PROJECT_DIR$/helping-hands.iml" filepath="$PROJECT_DIR$/helping-hands.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
