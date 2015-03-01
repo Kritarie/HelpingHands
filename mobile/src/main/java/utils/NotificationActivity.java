@@ -46,19 +46,39 @@ public class NotificationActivity extends Activity{
         asthmaIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
         asthmaIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        Intent cprIntent = new Intent(this, MainActivity.class);
-        cprIntent.setAction("com.frogtown.cpr");
-        cprIntent.putExtra(AILMENT_MESSAGE, "MY HEART STOPPED, PLEASE HELP");
-        cprIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
-        cprIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent strokeIntent = new Intent(this, MainActivity.class);
+        strokeIntent.setAction("com.frogtown.stroke");
+        strokeIntent.putExtra(AILMENT_MESSAGE, "GET #STROKED");
+        strokeIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        strokeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent heartAttackIntent = new Intent(this, MainActivity.class);
+        heartAttackIntent.setAction("com.frogtown.heartattack");
+        heartAttackIntent.putExtra(AILMENT_MESSAGE, "MY HEART JUST EXPLODED");
+        heartAttackIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        heartAttackIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent diabeetusIntent = new Intent(this, MainActivity.class);
+        diabeetusIntent.setAction("com.frogtown.diabeetus");
+        diabeetusIntent.putExtra(AILMENT_MESSAGE, "I NEED A SANDWHICH");
+        diabeetusIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        diabeetusIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingAsthmaIntent = PendingIntent.getActivity(this
                 , NOTIFICATION_CODE
                 , asthmaIntent
                 , PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingCprIntent = PendingIntent.getActivity(this
+        PendingIntent pendingStrokeIntent = PendingIntent.getActivity(this
                 , NOTIFICATION_CODE
-                , cprIntent
+                , strokeIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingHeartAttackIntent = PendingIntent.getActivity(this
+                , NOTIFICATION_CODE
+                , heartAttackIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingDiabeetusIntent = PendingIntent.getActivity(this
+                , NOTIFICATION_CODE
+                , diabeetusIntent
                 , PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new Notification.Builder(this)
@@ -66,7 +86,9 @@ public class NotificationActivity extends Activity{
                 .setContentText("Swipe left to request a helping hand")
                 .setSmallIcon(R.drawable.ic_drawer)
                 .addAction(R.drawable.ic_drawer, "Asthma Attack", pendingAsthmaIntent)
-                .addAction(R.drawable.ic_drawer, "Request CPR", pendingCprIntent)
+                .addAction(R.drawable.ic_drawer, "Stroke", pendingStrokeIntent)
+                .addAction(R.drawable.ic_drawer, "Heart Attack", pendingStrokeIntent)
+                .addAction(R.drawable.ic_drawer, "Diabeetus", pendingStrokeIntent)
                 .build();
     }
 }

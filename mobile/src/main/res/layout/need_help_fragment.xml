@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType = "centerCrop"
+        android:src="@drawable/bg"
         android:contentDescription="background image"/>
 
     <LinearLayout
@@ -25,15 +26,15 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1">
+            android:layout_weight="0.15">
 
             <TextView
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="18 Allen Street"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:textColor="@color/light_transparent"
                 android:layout_centerHorizontal="true"/>
 
             <TextView
@@ -41,8 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/address"
-                android:text="New York, NY"
                 android:textSize="18sp"
+                android:textColor="@color/light_transparent"
                 android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
@@ -50,7 +51,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.4">
+            android:layout_weight="0.35">
 
             <Button
                 android:id="@+id/helpButton"

@@ -12,7 +12,7 @@ import retrofit.http.POST;
  */
 public interface RestApi {
 
-    @POST("/api/CreateUser")
-    public void createUser(@Body User user);
+    @POST("/api/users/CreateUser")
+    public int createUser(@Body String id);
 
 }
