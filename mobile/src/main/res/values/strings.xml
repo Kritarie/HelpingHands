@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelpingHands</string>
+     <string name="app_name">Helping Hands</string>
 
     <string-array name="nav_drawer_sections">
         <item>Help Me!</item>
