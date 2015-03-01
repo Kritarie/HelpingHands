@@ -56,19 +56,14 @@ public class GcmIntentService extends IntentService {
 
                 double lat = extras.getDouble("lat");
                 double lng = extras.getDouble("lng");
-                LatLng userLocation = getGps();
+                Location userLocation = getGps();
 
                 Location locationA = new Location("Distress location");
 
                 locationA.setLatitude(lat);
                 locationA.setLongitude(lng);
 
-                Location locationB = new Location("User location");
-
-                locationB.setLatitude(userLocation.latitude);
-                locationB.setLongitude(userLocation.longitude);
-
-                float distance = locationA.distanceTo(locationB);
+                float distance = locationA.distanceTo(userLocation);
                 System.out.println("Distance between is " + distance);
                 if (distance < 1610) {
                     Intent i = new Intent (this, RescueActivity.class);
@@ -83,7 +78,7 @@ public class GcmIntentService extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-    private LatLng getGps() {
+    private Location getGps() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = lm.getProviders(true);
 
@@ -94,13 +89,8 @@ public class GcmIntentService extends IntentService {
             if (l != null) break;
         }
 
-        double[] gps = new double[2];
-        LatLng loc;
-        if (l != null) {
-            return new LatLng(l.getLatitude(), l.getLongitude());
-        }
 
-        return null;
+        return l;
     }
 
     // Put the message into a notification and post it.
