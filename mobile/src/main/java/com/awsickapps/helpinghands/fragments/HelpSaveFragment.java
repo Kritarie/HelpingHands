@@ -115,6 +115,7 @@ public class HelpSaveFragment extends ListFragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     ApplicationData.update(prefix + viewMap.get(this), isChecked);
+                    BaseApplication.getEventBus().post(new HelpEvent());
                 }
             };
 
@@ -159,4 +160,6 @@ public class HelpSaveFragment extends ListFragment {
         super.onDestroyView();
         ButterKnife.reset(this);
     }
+
+    public static class HelpEvent{}
 }

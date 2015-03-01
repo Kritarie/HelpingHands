@@ -51,10 +51,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="utils.NotificationActivity"/>
-        <activity
-            android:theme="@style/Base.Theme.AppCompat.Dialog"
-            android:name=".DisclaimerActivity"/>
 
         <receiver
             android:name=".GcmBroadcastReceiver"
