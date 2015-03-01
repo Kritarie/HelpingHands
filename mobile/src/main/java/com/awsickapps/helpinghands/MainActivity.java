@@ -1,25 +1,19 @@
 package com.awsickapps.helpinghands;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Window;
 
 import com.awsickapps.helpinghands.fragments.NeedHelpFragment;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,9 +21,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import utils.RestClient;
 import com.awsickapps.helpinghands.fragments.HelpSaveFragment;
 
 import utils.ApplicationData;
@@ -42,6 +34,7 @@ public class MainActivity extends ActionBarActivity
     private static final String PROPERTY_APP_VERSION = "1";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
+    private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT_TAG";
 
     /**
      * Substitute you own sender ID here. This is the project number you got
@@ -97,21 +90,28 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
         switch(position) {
             case 0:
-                fragmentManager.beginTransaction()
-                .replace(R.id.container, NeedHelpFragment.newInstance())
-                .commit();
+
+                /*fragmentManager.popBackStack(MAP_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                if (!(fragmentManager.findFragmentById(R.id.container) instanceof NeedHelpFragment))*/
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.container, NeedHelpFragment.newInstance(), MAP_FRAGMENT_TAG)
+                        .commit();
                 break;
+
             case 1:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, HelpSaveFragment.newInstance(position))
-                        .commit();
-                break;
             case 2:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, HelpSaveFragment.newInstance(position))
-                        .commit();
+                /*if (fragmentManager.findFragmentById(R.id.container) instanceof NeedHelpFragment)
+                    ft.addToBackStack(MAP_FRAGMENT_TAG)
+                            .add(R.id.container, HelpSaveFragment.newInstance(position))
+                            .commit();
+                else*/
+                    ft.replace(R.id.container, HelpSaveFragment.newInstance(position))
+                            .commit();
                 break;
         }
     }
