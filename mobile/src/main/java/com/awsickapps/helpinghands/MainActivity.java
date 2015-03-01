@@ -1,6 +1,8 @@
 package com.awsickapps.helpinghands;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
@@ -8,9 +10,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -27,14 +32,16 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 import com.awsickapps.helpinghands.fragments.HelpSaveFragment;
+import com.squareup.otto.Subscribe;
 
 import utils.ApplicationData;
-import utils.NotificationActivity;
 
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     public static final int REQUEST_CODE = 0x69;
+    public static final int NOTIFICATION_CODE = 0x42;
+    public static final String AILMENT_MESSAGE = "com.frogtown.helpinghands.ailmentmessage";
 
     //if an ailment is passed in through notification action store it here
     public String ailment;
@@ -74,6 +81,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseApplication.getEventBus().register(this);
         setContentView(R.layout.activity_main);
         ApplicationData.setSharedPreferences(this);
         Intent i = getIntent();
@@ -89,22 +97,12 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        Intent alarmIntent = new Intent(this, NotificationActivity.class);
-        startActivity(alarmIntent);
-
-        PendingIntent pendingAlarmIntent = PendingIntent.getActivity(this, REQUEST_CODE, alarmIntent, 0);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        long interval = 60000;//1 minute
-
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                interval,
-                interval,
-                pendingAlarmIntent);
+        createNotification();
 
         Intent intent = getIntent();
-        ailment = intent.getStringExtra(NotificationActivity.AILMENT_MESSAGE);
+        if(intent != null) {
+            ailment = intent.getStringExtra(AILMENT_MESSAGE);
+        }
 
         context = getApplicationContext();
 
@@ -121,11 +119,89 @@ public class MainActivity extends ActionBarActivity
         }
 
     }
+
+
+    @Subscribe
+    public void answerAvailable(HelpSaveFragment.HelpEvent unused){
+        createNotification();
+    }
+
+    public void createNotification(){
+
+        Intent asthmaIntent = new Intent(this, MainActivity.class);
+        asthmaIntent.setAction("com.frogtown.asthma");
+        asthmaIntent.putExtra(AILMENT_MESSAGE, "ASTHMA ATTACK AHHH!!!");
+        asthmaIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        asthmaIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent strokeIntent = new Intent(this, MainActivity.class);
+        strokeIntent.setAction("com.frogtown.stroke");
+        strokeIntent.putExtra(AILMENT_MESSAGE, "GET #STROKED");
+        strokeIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        strokeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent heartAttackIntent = new Intent(this, MainActivity.class);
+        heartAttackIntent.setAction("com.frogtown.heartattack");
+        heartAttackIntent.putExtra(AILMENT_MESSAGE, "MY HEART JUST EXPLODED");
+        heartAttackIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        heartAttackIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent diabeetusIntent = new Intent(this, MainActivity.class);
+        diabeetusIntent.setAction("com.frogtown.diabeetus");
+        diabeetusIntent.putExtra(AILMENT_MESSAGE, "I NEED A SANDWHICH");
+        diabeetusIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        diabeetusIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pendingAsthmaIntent = PendingIntent.getActivity(this
+                , NOTIFICATION_CODE
+                , asthmaIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingStrokeIntent = PendingIntent.getActivity(this
+                , NOTIFICATION_CODE
+                , strokeIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingHeartAttackIntent = PendingIntent.getActivity(this
+                , NOTIFICATION_CODE
+                , heartAttackIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingDiabeetusIntent = PendingIntent.getActivity(this
+                , NOTIFICATION_CODE
+                , diabeetusIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+        String[] helpOptions = getResources().getStringArray(R.array.helping_hands);
+        boolean[] display = new boolean[4];
+        for(int i = 0; i < display.length; i++){
+            display[i] = ApplicationData.isActive(ApplicationData.GET_HELP_WITH + helpOptions[i]);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContentTitle("Request A Helping Hand")
+                .setContentText("Swipe left to request a helping hand")
+                .setSmallIcon(R.drawable.ic_drawer);
+        if(display[0]){
+            builder = builder.addAction(R.drawable.ic_drawer, "Asthma Attack", pendingAsthmaIntent);
+        }
+        if(display[1]){
+            builder = builder.addAction(R.drawable.ic_drawer, "Stroke", pendingStrokeIntent);
+        }
+        if(display[2]){
+            builder = builder.addAction(R.drawable.ic_drawer, "Heart Attack", pendingHeartAttackIntent);
+        }
+        if(display[3]){
+            builder = builder.addAction(R.drawable.ic_drawer, "Diabeetus", pendingDiabeetusIntent);
+        }
+
+        if(display[0] || display[1] || display[2] || display[3]){
+            NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_CODE, builder.build());
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        ailment = intent.getStringExtra(NotificationActivity.AILMENT_MESSAGE);
+        ailment = intent.getStringExtra(AILMENT_MESSAGE);
         Log.d("AILMENT", ailment);
 
         //TODO This should be replaced by calling the emergency buttons onclick
@@ -329,6 +405,8 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        BaseApplication.getEventBus().unregister(this);
     }
 
     /**
