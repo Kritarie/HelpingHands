@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -58,10 +59,12 @@ public class GcmIntentService extends IntentService {
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
                 try {
-                    JSONObject response = new JSONObject(extras.getString("data"));
-                    Log.d(TAG,"json: " + response);
-                    double lat = response.getDouble("lat");
-                    double lng = response.getDouble("lng");
+                    String temp = intent.getStringExtra("data");
+                    String temp2 = extras.toString();
+                    JSONArray json = new JSONArray(temp2.replace("Bundle", ""));
+
+                    double lat = json.getJSONObject(0).getDouble("lat");//intent.getDoubleExtra("lat",0);//extras.getDouble("lat");
+                    double lng = json.getJSONObject(0).getDouble("lng");
                     Log.d(TAG,"Received " + extras.toString());
                     Log.d(TAG,"   LAT/LNG " + lat+"/"+lng);
                     Location userLocation = getGps();
@@ -82,7 +85,7 @@ public class GcmIntentService extends IntentService {
                     Intent i = new Intent (this, RescueActivity.class);
                     i.putExtra("lat", lat);
                     i.putExtra("lng", lng);
-                    i.putExtra("ailment", response.getString("ailment"));
+                    i.putExtra("ailment", json.getJSONObject(0).getString("ailment"));
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 }catch (Exception e){
