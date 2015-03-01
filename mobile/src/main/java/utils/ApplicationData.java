@@ -26,4 +26,12 @@ public class ApplicationData {
     public static boolean isActive(String key){
         return sp.getBoolean(key, false);
     }
+
+    public static int getInt(String key) {
+        return sp.getInt(key, 0);
+    }
+
+    public static boolean update(String key, int value) {
+        return sp.edit().putInt(key, value).commit();
+    }
 }
