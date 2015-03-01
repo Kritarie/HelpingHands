@@ -114,6 +114,7 @@ public class MainActivity extends ActionBarActivity
         }
 
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

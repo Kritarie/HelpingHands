@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"/>
 
     <Button
+        android:id="@+id/bSaveChanges"
         android:layout_gravity="right|bottom"
-        android:textSize="@dimen/text_size"
         android:text="Save Changes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
