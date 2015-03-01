@@ -3,8 +3,10 @@ package com.awsickapps.helpinghands;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
     TextView tvDisclaimer;
 
     HashMap<View, String> viewMap;
+    Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +50,14 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
                 getString(R.string.disclaimer_end)));
 
 
-        setListAdapter(new Adapter(this));
+        adapter = new Adapter(this);
+        setListAdapter(adapter);
+
         getListView().setOnItemClickListener(this);
 
     }
+
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -58,12 +65,8 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
 
         Toast.makeText(this, "Help is on the way!", Toast.LENGTH_LONG).show();
 
-
-        //if(request location settings){
-            //send their needed hand request and gps coordinates to MATT JENKINS!!!
-            sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
-        //}
-
+        //send their needed hand request and gps coordinates to MATT JENKINS!!!
+        sendTextMessage(handNeeded, null); //pass gps coordinates for text message building
         dial911();
     }
 
@@ -92,19 +95,24 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
 
         public Adapter(Context context){
 
-            missingHandsList = new ArrayList<>();
             this.context = context;
+            setUpEmergencies();
+
+        }
+
+        public void setUpEmergencies(){
+            missingHandsList = new ArrayList<>();
             String[] missingHands = getResources().getStringArray(R.array.helping_hands);
 
             for(String hand : missingHands){
-
                 if(ApplicationData.isActive(ApplicationData.GET_HELP_WITH + hand))
                     missingHandsList.add(hand);
             }
 
-            if(missingHandsList.isEmpty())
-                for(String hand : missingHands)
+            if(missingHandsList.isEmpty()) {
+                for (String hand : missingHands)
                     missingHandsList.add(hand);
+            }
         }
 
         @Override
@@ -136,8 +144,4 @@ public class DisclaimerActivity extends ListActivity implements AdapterView.OnIt
             return view;
         }
     }
-
-
-
-
 }
