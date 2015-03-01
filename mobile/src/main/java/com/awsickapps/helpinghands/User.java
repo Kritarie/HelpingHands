@@ -2,6 +2,8 @@ package com.awsickapps.helpinghands;
 
 import android.content.SharedPreferences;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -11,8 +13,11 @@ import java.util.List;
  */
 public class User {
 
+    @SerializedName("DeviceId")
     private String gcmId;
+    @SerializedName("CanHelp")
     private List<String> canHelpWith;
+    @SerializedName("NeedHelp")
     private List<String> needHelpWith;
 
     public User() {

@@ -77,13 +77,14 @@ public class GcmIntentService extends IntentService {
                     System.out.println("Distance between is " + distance + " / " + 1610*minDist);
 
                     if (distance < 1610*minDist) {
-                        Intent i = new Intent (this, RescueActivity.class);
-                        i.putExtra("lat", lat);
-                        i.putExtra("lng", lng);
-                        i.putExtra("ailment", response.getString("ailment"));
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
+
                     }
+                    Intent i = new Intent (this, RescueActivity.class);
+                    i.putExtra("lat", lat);
+                    i.putExtra("lng", lng);
+                    i.putExtra("ailment", response.getString("ailment"));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
                 }catch (Exception e){
                     Log.d(TAG,"error", e);
                 }
