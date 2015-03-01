@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.awsickapps.helpinghands.BaseApplication;
 import com.awsickapps.helpinghands.DisclaimerActivity;
@@ -35,7 +38,12 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import utils.ApplicationData;
 import utils.GeocoderTask;
+import utils.RestClient;
 
 /**
  * Created by kritarie on 2/28/15.
@@ -46,6 +54,8 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     @InjectView(R.id.address) TextView address;
     @InjectView(R.id.citystate) TextView citystate;
     @InjectView(R.id.helpButton) Button helpButton;
+
+    public static double lat,lng;
 
     private SupportMapFragment mapFragment;
     private GoogleMap map;
@@ -97,8 +107,8 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onMyLocationChange(Location loc) {
                 location = loc;
-                double lat = loc.getLatitude();
-                double lng = loc.getLongitude();
+                lat = loc.getLatitude();
+                lng = loc.getLongitude();
 
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                         new LatLng(lat, lng), 15);
@@ -109,7 +119,9 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                 getGps(), 15);
-        map.moveCamera(cameraUpdate);
+        try{
+            map.moveCamera(cameraUpdate);
+        }catch (Exception e){}
 
     }
 
@@ -140,17 +152,57 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     public void requestHelp(String ailment){
         //TODO this should be replaced by the buttons onclick function
         if(helpButton != null) {
-            helpButton.setText(ailment);
+
+            Toast.makeText(context, "Help is on the way!", Toast.LENGTH_LONG).show();
+
+            //send their needed hand request and gps coordinates to MATT JENKINS!!!
+            RestClient.get().requestHelp(ApplicationData.getRegId(), ailment, lat, lng, new Callback<Integer>() {
+
+                @Override
+                public void success(Integer integer, Response response) {
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+            sendTextMessage(ailment, null); //pass gps coordinates for text message building
+            dial911();
         }
         Log.d("AILMENT", "Requesting help");
+    }
+
+
+
+    private void sendTextMessage(String handNeeded, String location){
+
+        SmsManager sms = SmsManager.getDefault();
+        //add correct location to this message.
+        sms.sendTextMessage("5409076417", null, "Hello, I am located at: UVA Campus \n I am suffering from/in need of help with: " + handNeeded + "\n Please send help!", null, null);
+
+    }
+
+    private void dial911(){
+
+        Uri number = Uri.parse("tel:8047319861");
+        Intent callIntent = new Intent(Intent.ACTION_CALL, number);
+        startActivity(callIntent);
+
     }
 
     @OnClick(R.id.helpButton)
     public void startEmergencyDisclaimer() {
 
         Intent i = new Intent(getActivity(), DisclaimerActivity.class);
-        i.putExtra("lat", location.getLatitude());
-        i.putExtra("lng", location.getLongitude());
+        if(location != null) {
+            i.putExtra("lat", location.getLatitude());
+            i.putExtra("lng", location.getLongitude());
+        }else{
+            i.putExtra("lat", lat);
+            i.putExtra("lng", lng);
+        }
         startActivity(i);
     }
 

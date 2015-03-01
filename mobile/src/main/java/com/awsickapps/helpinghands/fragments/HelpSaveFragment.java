@@ -199,7 +199,7 @@ public class HelpSaveFragment extends ListFragment {
 
 
         Toast.makeText(getActivity(), "Changes Saved", Toast.LENGTH_SHORT).show();
-        RestClient.get().updateUser(new User(ApplicationData.getRegId(), usersHelpsWith, userNeedsHelpsWith),
+        RestClient.get().updateUser(ApplicationData.getRegId(), usersHelpsWith, userNeedsHelpsWith,
                                     new Callback<Integer>() {
 
             @Override

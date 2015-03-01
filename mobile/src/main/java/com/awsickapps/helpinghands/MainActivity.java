@@ -136,6 +136,7 @@ public class MainActivity extends ActionBarActivity
         String[] ailments = getResources().getStringArray(R.array.helping_hands);
         Intent[] intents = new Intent[ailments.length];
 
+
         for(int i = 0; i < ailments.length; i++){
             Intent intent = new Intent(this, MainActivity.class);
             intent.setAction("com.frogtown."+ailments[i]);
@@ -163,14 +164,14 @@ public class MainActivity extends ActionBarActivity
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle("Request A Helping Hand")
                 .setContentText("Swipe left to request a helping hand")
-                .setSmallIcon(R.drawable.ic_drawer);
+                .setSmallIcon(R.drawable.icon);
 
         boolean showNotification = false;
 
         for(int i = 0; i < ailments.length; i++){
             if(ApplicationData.isActive(ApplicationData.GET_HELP_WITH + ailments[i])){
                 showNotification = true;
-                builder = builder.addAction(R.drawable.ic_drawer, ailments[i], pendingIntents[i]);
+                builder = builder.addAction(ApplicationData.getImageAsset(ailments[i]), ailments[i], pendingIntents[i]);
             }
         }
 

@@ -17,6 +17,15 @@
         android:visibility="invisible"
         android:layout_centerInParent="true"/>
 
+    <TextView
+        android:id="@+id/tvAilment"
+        android:text="Heart Attack"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/helpButton"/>
+
     <Button
         android:id="@+id/helpButton"
         android:layout_width="match_parent"

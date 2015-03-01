@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -47,6 +48,9 @@ public class RescueActivity extends FragmentActivity implements OnMapReadyCallba
 
         Bundle b = getIntent().getExtras();
         distressLocation = new LatLng(b.getDouble("lat"), b.getDouble("lng"));
+
+        String ailment = b.getString("ailment");
+        ((TextView)findViewById(R.id.tvAilment)).setText(ailment);
 
         FragmentManager fm = getSupportFragmentManager();
 
