@@ -5,9 +5,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.SystemClock;
 
+import com.awsickapps.helpinghands.MainActivity;
 import com.awsickapps.helpinghands.R;
-import com.awsickapps.helpinghands.busevents.HelpMeActivity;
 
 /**
  * Created by Matthew on 2/28/2015.
@@ -38,20 +40,24 @@ public class NotificationActivity extends Activity{
 
     public Notification buildNotification(){
 
-        Intent asthmaIntent = new Intent(this, HelpMeActivity.class);
+        Intent asthmaIntent = new Intent(this, MainActivity.class);
         asthmaIntent.setAction("com.frogtown.asthma");
         asthmaIntent.putExtra(AILMENT_MESSAGE, "ASTHMA ATTACK AHHH!!!");
+        asthmaIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        asthmaIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        Intent cprIntent = new Intent(this, HelpMeActivity.class);
-        asthmaIntent.setAction("com.frogtown.cpr");
+        Intent cprIntent = new Intent(this, MainActivity.class);
+        cprIntent.setAction("com.frogtown.cpr");
         cprIntent.putExtra(AILMENT_MESSAGE, "MY HEART STOPPED, PLEASE HELP");
+        cprIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+        cprIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingAsthmaIntent = PendingIntent.getActivity(this
-                , REQUEST_CODE
+                , NOTIFICATION_CODE
                 , asthmaIntent
                 , PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pendingCprIntent = PendingIntent.getActivity(this
-                , REQUEST_CODE
+                , NOTIFICATION_CODE
                 , cprIntent
                 , PendingIntent.FLAG_UPDATE_CURRENT);
 

@@ -1,11 +1,16 @@
 package com.awsickapps.helpinghands;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,9 +18,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
+import utils.NotificationActivity;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    public static final int REQUEST_CODE = 0x69;
+
+    //if an ailment is passed in through notification action store it here
+    public String ailment;
+
+    public NeedHelpFragment needHelpFragment;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -40,6 +53,35 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+        Intent alarmIntent = new Intent(this, NotificationActivity.class);
+        startActivity(alarmIntent);
+
+        PendingIntent pendingAlarmIntent = PendingIntent.getActivity(this, REQUEST_CODE, alarmIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        long interval = 60000;//1 minute
+
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                interval,
+                interval,
+                pendingAlarmIntent);
+
+        Intent intent = getIntent();
+        ailment = intent.getStringExtra(NotificationActivity.AILMENT_MESSAGE);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        ailment = intent.getStringExtra(NotificationActivity.AILMENT_MESSAGE);
+        Log.d("AILMENT",ailment);
+
+        //TODO This should be replaced by calling the emergency buttons onclick
+        needHelpFragment.requestHelp(ailment);
     }
 
     @Override
@@ -52,8 +94,13 @@ public class MainActivity extends ActionBarActivity
 
         switch(position) {
             case 0:
+                needHelpFragment = (NeedHelpFragment)NeedHelpFragment.newInstance();
+                if(ailment != null && ailment.length() > 0){
+                    needHelpFragment.requestHelp(ailment);
+                }
+                Log.d("AILMENT", "Ailment " + ailment);
                 fragmentManager.beginTransaction()
-                .replace(R.id.container, NeedHelpFragment.newInstance())
+                .replace(R.id.container, needHelpFragment)
                 .commit();
                 break;
         }
