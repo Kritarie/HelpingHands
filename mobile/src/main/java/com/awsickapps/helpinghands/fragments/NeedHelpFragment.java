@@ -2,7 +2,9 @@ package com.awsickapps.helpinghands.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.awsickapps.helpinghands.BaseApplication;
+import com.awsickapps.helpinghands.DisclaimerActivity;
 import com.awsickapps.helpinghands.R;
 import com.awsickapps.helpinghands.busevents.GeocodedEvent;
 import com.google.android.gms.maps.CameraUpdate;
@@ -25,8 +28,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Subscribe;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import utils.GeocoderTask;
 
 /**
@@ -93,6 +99,10 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                getGps(), 15);
+        map.moveCamera(cameraUpdate);
+
     }
 
     @Override
@@ -125,5 +135,32 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
             helpButton.setText(ailment);
         }
         Log.d("AILMENT", "Requesting help");
+    }
+
+    @OnClick(R.id.helpButton)
+    public void startEmergencyDisclaimer() {
+
+        Intent i = new Intent(getActivity(), DisclaimerActivity.class);
+        startActivity(i);
+    }
+
+    private LatLng getGps() {
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+
+        Location l = null;
+
+        for (int i=providers.size()-1; i>=0; i--) {
+            l = lm.getLastKnownLocation(providers.get(i));
+            if (l != null) break;
+        }
+
+        double[] gps = new double[2];
+        LatLng loc;
+        if (l != null) {
+            return new LatLng(l.getLatitude(), l.getLongitude());
+        }
+
+        return null;
     }
 }

@@ -20,9 +20,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.awsickapps.helpinghands.fragments.HelpSaveFragment;
+import com.awsickapps.helpinghands.busevents.ChangesSavedEvent;
+import com.squareup.otto.Subscribe;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -273,5 +273,23 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BaseApplication.getEventBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BaseApplication.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void changesSaved(ChangesSavedEvent event) {
+        selectItem(0);
+        System.out.println("Changes saved");
     }
 }

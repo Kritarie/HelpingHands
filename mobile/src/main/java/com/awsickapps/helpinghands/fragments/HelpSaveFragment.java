@@ -9,17 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.awsickapps.helpinghands.BaseApplication;
 import com.awsickapps.helpinghands.R;
+import com.awsickapps.helpinghands.busevents.ChangesSavedEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import utils.ApplicationData;
 
 /**
@@ -28,6 +35,9 @@ import utils.ApplicationData;
 public class HelpSaveFragment extends ListFragment {
 
     private static String prefix;
+
+    @InjectView(R.id.bSaveChanges) Button bSaveChanges;
+
 
     public static HelpSaveFragment newInstance(int position){
 
@@ -45,6 +55,8 @@ public class HelpSaveFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_help_save, container, false);
+        ButterKnife.inject(this, view);
+
 
         TextView tv = (TextView) view.findViewById(R.id.tvHeader);
         if(prefix.equals(ApplicationData.HELP_WITH))
@@ -113,6 +125,40 @@ public class HelpSaveFragment extends ListFragment {
 
             return row;
         }
+    }
+
+
+    @OnClick(R.id.bSaveChanges)
+    public void sendUpdatedSettingsToServer(){
+
+        String needHelp = ApplicationData.HELP_WITH;
+        String helpWith = ApplicationData.GET_HELP_WITH;
+        String[] keys = getResources().getStringArray(R.array.helping_hands);
+
+        ArrayList<String> usersHelpsWith = new ArrayList<>();
+        ArrayList<String> userNeedsHelpsWith = new ArrayList<>();
+
+        for(String hand : keys){
+            if (ApplicationData.isActive(needHelp + hand))
+                userNeedsHelpsWith.add(hand);
+
+            if(ApplicationData.isActive(helpWith + hand))
+                usersHelpsWith.add(hand);
+        }
+
+        //first, set this fragment to tell the nav drawer to press the first button (map view fragment)
+
+        //then, the the lists that are built and send them to MATT JENKINS SERVER!!!!
+
+
+        Toast.makeText(getActivity(), "Changes Saved", Toast.LENGTH_SHORT).show();
+        BaseApplication.getEventBus().post(new ChangesSavedEvent());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     public static class HelpEvent{}

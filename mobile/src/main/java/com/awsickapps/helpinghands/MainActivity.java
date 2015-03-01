@@ -120,81 +120,59 @@ public class MainActivity extends ActionBarActivity
 
     }
 
-
     @Subscribe
     public void answerAvailable(HelpSaveFragment.HelpEvent unused){
         createNotification();
     }
 
     public void createNotification(){
+        String[] ailments = getResources().getStringArray(R.array.helping_hands);
+        Intent[] intents = new Intent[ailments.length];
 
-        Intent asthmaIntent = new Intent(this, MainActivity.class);
-        asthmaIntent.setAction("com.frogtown.asthma");
-        asthmaIntent.putExtra(AILMENT_MESSAGE, "ASTHMA ATTACK AHHH!!!");
-        asthmaIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
-        asthmaIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        for(int i = 0; i < ailments.length; i++){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setAction("com.frogtown."+ailments[i]);
+            intent.putExtra(AILMENT_MESSAGE, ailments[i]);
+            intent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        Intent strokeIntent = new Intent(this, MainActivity.class);
-        strokeIntent.setAction("com.frogtown.stroke");
-        strokeIntent.putExtra(AILMENT_MESSAGE, "GET #STROKED");
-        strokeIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
-        strokeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intents[i] = intent;
+        }
 
-        Intent heartAttackIntent = new Intent(this, MainActivity.class);
-        heartAttackIntent.setAction("com.frogtown.heartattack");
-        heartAttackIntent.putExtra(AILMENT_MESSAGE, "MY HEART JUST EXPLODED");
-        heartAttackIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
-        heartAttackIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent[] pendingIntents = new PendingIntent[ailments.length];
+        for(int i = 0; i < ailments.length; i++){
+            PendingIntent pendingIntent = PendingIntent.getActivity(this
+                    , NOTIFICATION_CODE
+                    , intents[i]
+                    , PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent diabeetusIntent = new Intent(this, MainActivity.class);
-        diabeetusIntent.setAction("com.frogtown.diabeetus");
-        diabeetusIntent.putExtra(AILMENT_MESSAGE, "I NEED A SANDWHICH");
-        diabeetusIntent.setData((Uri.parse("foobar://" + SystemClock.elapsedRealtime())));
-        diabeetusIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        PendingIntent pendingAsthmaIntent = PendingIntent.getActivity(this
-                , NOTIFICATION_CODE
-                , asthmaIntent
-                , PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingStrokeIntent = PendingIntent.getActivity(this
-                , NOTIFICATION_CODE
-                , strokeIntent
-                , PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingHeartAttackIntent = PendingIntent.getActivity(this
-                , NOTIFICATION_CODE
-                , heartAttackIntent
-                , PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingDiabeetusIntent = PendingIntent.getActivity(this
-                , NOTIFICATION_CODE
-                , diabeetusIntent
-                , PendingIntent.FLAG_UPDATE_CURRENT);
-        String[] helpOptions = getResources().getStringArray(R.array.helping_hands);
-        boolean[] display = new boolean[4];
+            pendingIntents[i] = pendingIntent;
+        }
+        boolean[] display = new boolean[ailments.length];
         for(int i = 0; i < display.length; i++){
-            display[i] = ApplicationData.isActive(ApplicationData.GET_HELP_WITH + helpOptions[i]);
+            display[i] = ApplicationData.isActive(ApplicationData.GET_HELP_WITH + ailments[i]);
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle("Request A Helping Hand")
                 .setContentText("Swipe left to request a helping hand")
                 .setSmallIcon(R.drawable.ic_drawer);
-        if(display[0]){
-            builder = builder.addAction(R.drawable.ic_drawer, "Asthma Attack", pendingAsthmaIntent);
-        }
-        if(display[1]){
-            builder = builder.addAction(R.drawable.ic_drawer, "Stroke", pendingStrokeIntent);
-        }
-        if(display[2]){
-            builder = builder.addAction(R.drawable.ic_drawer, "Heart Attack", pendingHeartAttackIntent);
-        }
-        if(display[3]){
-            builder = builder.addAction(R.drawable.ic_drawer, "Diabeetus", pendingDiabeetusIntent);
+
+        boolean showNotification = false;
+
+        for(int i = 0; i < ailments.length; i++){
+            if(ApplicationData.isActive(ApplicationData.GET_HELP_WITH + ailments[i])){
+                showNotification = true;
+                builder = builder.addAction(R.drawable.ic_drawer, ailments[i], pendingIntents[i]);
+            }
         }
 
-        if(display[0] || display[1] || display[2] || display[3]){
+        if(showNotification){
             NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(NOTIFICATION_CODE, builder.build());
         }
+
+        Log.d("NOTIF","BUILT NOTIFICATION");
     }
 
     @Override

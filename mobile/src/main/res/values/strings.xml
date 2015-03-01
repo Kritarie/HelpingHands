@@ -8,11 +8,18 @@
     </string-array>
 
     <string-array name="helping_hands">
-        <item>CPR</item>
-        <item>Inhaler</item>
-        <item>epi pen</item>
-        <item>weed</item>
+        <item>Heart Attack</item>
+        <item>Stroke</item>
+        <item>Allergic Reaction</item>
+        <item>Glaucoma</item>
+        <item>Diabetes</item>
     </string-array>
+
+    <string name="warning_text">WARNING: </string>
+    <string name="disclaimer_start">Selecting an option below will</string>
+    <string name="disclaimer">SEND SMS AND CALL 911</string>
+    <string name="disclaimer_end">please only use this application if you are in need of emergency help.</string>
+
 
     <string name="selected_hands">How many Hands can you lend?</string>
     <string name="hands_needed">What health conditions would you need help with?</string>
