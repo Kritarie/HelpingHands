@@ -32,8 +32,8 @@ public class RescueActivity extends FragmentActivity implements OnMapReadyCallba
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.rescue_activity_layout);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.rescue_activity_layout);
         ButterKnife.inject(this);
 
         Bundle b = getIntent().getExtras();

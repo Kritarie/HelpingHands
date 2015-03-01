@@ -15,7 +15,11 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONObject;
+
 import java.util.List;
+
+import utils.ApplicationData;
 
 /**
  * Created by kritarie on 2/28/15.
@@ -53,24 +57,34 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
+                try {
+                    JSONObject response = new JSONObject(extras.getString("data"));
+                    Log.d(TAG,"json: " + response);
+                    double lat = response.getDouble("lat");
+                    double lng = response.getDouble("lng");
+                    Log.d(TAG,"Received " + extras.toString());
+                    Log.d(TAG,"   LAT/LNG " + lat+"/"+lng);
+                    Location userLocation = getGps();
 
-                double lat = extras.getDouble("lat");
-                double lng = extras.getDouble("lng");
-                Location userLocation = getGps();
+                    Location locationA = new Location("Distress location");
+                    Log.d(TAG,"MY LAT/LNG " + userLocation.getLatitude()+"/"+userLocation.getLongitude());
 
-                Location locationA = new Location("Distress location");
+                    locationA.setLatitude(lat);
+                    locationA.setLongitude(lng);
 
-                locationA.setLatitude(lat);
-                locationA.setLongitude(lng);
+                    float distance = locationA.distanceTo(userLocation);
+                    double minDist = ApplicationData.getInt("distance");
+                    System.out.println("Distance between is " + distance + " / " + 1610*minDist);
 
-                float distance = locationA.distanceTo(userLocation);
-                System.out.println("Distance between is " + distance);
-                if (distance < 1610) {
-                    Intent i = new Intent (this, RescueActivity.class);
-                    i.putExtra("lat", lat);
-                    i.putExtra("lng", lng);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
+                    if (distance < 1610*minDist) {
+                        Intent i = new Intent (this, RescueActivity.class);
+                        i.putExtra("lat", lat);
+                        i.putExtra("lng", lng);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }
+                }catch (Exception e){
+                    Log.d(TAG,"error", e);
                 }
             }
         }

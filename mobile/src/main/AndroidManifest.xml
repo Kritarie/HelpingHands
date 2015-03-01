@@ -55,6 +55,9 @@
         <activity android:name=".DisclaimerActivity"
             android:theme="@style/Base.Theme.AppCompat.Dialog"/>
 
+        <activity android:name=".RescueActivity"
+            android:screenOrientation="portrait"/>
+
         <receiver
             android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
