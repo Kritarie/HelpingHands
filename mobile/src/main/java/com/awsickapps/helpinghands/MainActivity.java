@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -67,11 +68,17 @@ public class MainActivity extends ActionBarActivity
 
     String regid;
 
+    double lat;
+    double lng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ApplicationData.setSharedPreferences(this);
+        Intent i = getIntent();
+        lat = i.getDoubleExtra("lat", 0);
+        lng = i.getDoubleExtra("lng", 0);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -147,9 +154,7 @@ public class MainActivity extends ActionBarActivity
                 fragmentManager.beginTransaction()
                     .replace(R.id.container, needHelpFragment, MAP_FRAGMENT_TAG)
                     .commit();
-
                 break;
-
             case 1:
             case 2:
                 /*if (fragmentManager.findFragmentById(R.id.container) instanceof NeedHelpFragment)
