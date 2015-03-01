@@ -2,6 +2,7 @@ package com.awsickapps.helpinghands.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.awsickapps.helpinghands.BaseApplication;
+import com.awsickapps.helpinghands.DisclaimerActivity;
 import com.awsickapps.helpinghands.R;
 import com.awsickapps.helpinghands.busevents.GeocodedEvent;
 import com.google.android.gms.maps.CameraUpdate;
@@ -27,6 +29,7 @@ import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import utils.GeocoderTask;
 
 /**
@@ -125,5 +128,13 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
             helpButton.setText(ailment);
         }
         Log.d("AILMENT", "Requesting help");
+    }
+
+    @OnClick(R.id.helpButton)
+    public void startEmergencyDisclaimer(){
+
+        Intent i = new Intent(getActivity(), DisclaimerActivity.class);
+        startActivity(i);
+
     }
 }

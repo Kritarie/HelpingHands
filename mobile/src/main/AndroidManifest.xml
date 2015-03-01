@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".BaseApplication"
@@ -50,8 +51,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="utils.NotificationActivity"></activity>
-        <activity android:name=".DisclaimerActivity"></activity>
+        <activity android:name="utils.NotificationActivity"/>
+        <activity
+            android:theme="@style/Base.Theme.AppCompat.Dialog"
+            android:name=".DisclaimerActivity"/>
 
         <receiver
             android:name=".GcmBroadcastReceiver"
