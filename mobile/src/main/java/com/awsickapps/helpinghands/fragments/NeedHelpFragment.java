@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -22,9 +23,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
@@ -46,12 +44,8 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     private Context context;
     private Location location;
 
-    public static Fragment newInstance(double lat, double lng) {
+    public static Fragment newInstance() {
         NeedHelpFragment f = new NeedHelpFragment();
-        Bundle b = new Bundle();
-        b.putDouble("lat", lat);
-        b.putDouble("lng", lng);
-        f.setArguments(b);
         return f;
     }
 
@@ -123,5 +117,11 @@ public class NeedHelpFragment extends Fragment implements OnMapReadyCallback {
     public void setAddress(GeocodedEvent event) {
         address.setText(event.getAddress());
         citystate.setText(event.getCity() + ", " + event.getState());
+    }
+
+    public void requestHelp(String ailment){
+        //TODO this should be replaced by the buttons onclick function
+        helpButton.setText(ailment);
+        Log.d("AILMENT", "Requesting help");
     }
 }
