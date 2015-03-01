@@ -12,7 +12,7 @@
         <item>Stroke</item>
         <item>Allergic Reaction</item>
         <item>Glaucoma</item>
-        <item>Diabetes</item>
+        <item>Aszthma Attack</item>
     </string-array>
 
     <string name="warning_text">WARNING: </string>
